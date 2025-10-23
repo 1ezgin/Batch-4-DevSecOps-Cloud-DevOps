@@ -1,0 +1,60 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1559.va_a_533730b_ea_d">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2273.v643f36ed9e94"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2273.v643f36ed9e94">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>Git_branch</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>Git_branch</name>
+          <description>git branch name</description>
+          <defaultValue>main</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4209.v83c4e257f1e9">
+    <script>pipeline {
+    agent any
+    
+    tools {
+        jdk &apos;jdk17&apos;
+        maven &apos;maven3&apos;
+    }
+
+parameters {
+    string (name: &apos;Git_branch&apos;, defaultValue: &apos;main&apos;, description: &apos;git branch name&apos;)
+}
+
+    stages {
+        stage(&apos;Git checkout&apos;) {
+            steps {
+            git branch: &quot;${params.Git_branch}&quot;, credentialsId: &apos;git-creds&apos;, url: &apos;https://github.com/1ezgin/DEVOPS-CICD.git&apos;
+            }
+        }
+        
+          stage(&apos;Build&apos;) {
+            steps {
+                sh &quot;mvn package&quot;
+            }
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
